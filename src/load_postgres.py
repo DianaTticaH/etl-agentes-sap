@@ -13,6 +13,8 @@ def upsert_orders(df):
         "DocNum": "docnum",
         "DocDate": "docdate",
         "UpdateDate": "updatedate",
+        "UpdateTS": "updatets",
+        "UpdateKey": "updatekey",
         "CardCode": "cardcode",
         "CardName": "cardname",
         "DocTotal": "doctotal",
@@ -24,18 +26,20 @@ def upsert_orders(df):
 
     query = text("""
         INSERT INTO stg_sap_orders (
-            docentry, docnum, docdate, updatedate, cardcode, cardname,
-            doctotal, vatsum, discsum, comments, agentecodigo
+            docentry, docnum, docdate, updatedate, updatets, updatekey,
+            cardcode, cardname, doctotal, vatsum, discsum, comments, agentecodigo
         )
         VALUES (
-            :docentry, :docnum, :docdate, :updatedate, :cardcode, :cardname,
-            :doctotal, :vatsum, :discsum, :comments, :agentecodigo
+            :docentry, :docnum, :docdate, :updatedate, :updatets, :updatekey,
+            :cardcode, :cardname, :doctotal, :vatsum, :discsum, :comments, :agentecodigo
         )
         ON CONFLICT (docentry)
         DO UPDATE SET
             docnum = EXCLUDED.docnum,
             docdate = EXCLUDED.docdate,
             updatedate = EXCLUDED.updatedate,
+            updatets = EXCLUDED.updatets,
+            updatekey = EXCLUDED.updatekey,
             cardcode = EXCLUDED.cardcode,
             cardname = EXCLUDED.cardname,
             doctotal = EXCLUDED.doctotal,

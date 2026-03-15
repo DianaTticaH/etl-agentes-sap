@@ -1,15 +1,14 @@
 from sqlalchemy import text
 from config import get_postgres_engine
 
-
 PROCESS_NAME = "etl_sap_orders"
 
 
-def get_last_load_ts():
+def get_last_source_key():
     engine = get_postgres_engine()
 
     query = text("""
-        SELECT last_load_ts
+        SELECT last_source_key
         FROM etl_control_agentes_sap
         WHERE process_name = :process_name
     """)
@@ -23,15 +22,30 @@ def get_last_load_ts():
     return None
 
 
-def update_control(status: str, message: str, last_load_ts=None):
+def update_control(status: str, message: str, last_load_ts=None, last_source_key=None):
     engine = get_postgres_engine()
 
     query = text("""
-        INSERT INTO etl_control_agentes_sap (process_name, last_load_ts, last_status, last_message, updated_at)
-        VALUES (:process_name, :last_load_ts, :last_status, :last_message, CURRENT_TIMESTAMP)
+        INSERT INTO etl_control_agentes_sap (
+            process_name,
+            last_load_ts,
+            last_source_key,
+            last_status,
+            last_message,
+            updated_at
+        )
+        VALUES (
+            :process_name,
+            :last_load_ts,
+            :last_source_key,
+            :last_status,
+            :last_message,
+            CURRENT_TIMESTAMP
+        )
         ON CONFLICT (process_name)
         DO UPDATE SET
             last_load_ts = EXCLUDED.last_load_ts,
+            last_source_key = EXCLUDED.last_source_key,
             last_status = EXCLUDED.last_status,
             last_message = EXCLUDED.last_message,
             updated_at = CURRENT_TIMESTAMP
@@ -41,6 +55,7 @@ def update_control(status: str, message: str, last_load_ts=None):
         conn.execute(query, {
             "process_name": PROCESS_NAME,
             "last_load_ts": last_load_ts,
+            "last_source_key": last_source_key,
             "last_status": status,
             "last_message": message
         })
