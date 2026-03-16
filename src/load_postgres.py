@@ -21,17 +21,21 @@ def upsert_orders(df):
         "VatSum": "vatsum",
         "DiscSum": "discsum",
         "Comments": "comments",
-        "AgenteCodigo": "agentecodigo"
+        "AgenteCodigo": "agentecodigo",
+        "Nomipad": "nomipad",
+        "CodPedido": "codpedido"
     }).to_dict(orient="records")
 
     query = text("""
         INSERT INTO stg_sap_orders (
             docentry, docnum, docdate, updatedate, updatets, updatekey,
-            cardcode, cardname, doctotal, vatsum, discsum, comments, agentecodigo
+            cardcode, cardname, doctotal, vatsum, discsum, comments,
+            agentecodigo, nomipad, codpedido
         )
         VALUES (
             :docentry, :docnum, :docdate, :updatedate, :updatets, :updatekey,
-            :cardcode, :cardname, :doctotal, :vatsum, :discsum, :comments, :agentecodigo
+            :cardcode, :cardname, :doctotal, :vatsum, :discsum, :comments,
+            :agentecodigo, :nomipad, :codpedido
         )
         ON CONFLICT (docentry)
         DO UPDATE SET
@@ -47,6 +51,8 @@ def upsert_orders(df):
             discsum = EXCLUDED.discsum,
             comments = EXCLUDED.comments,
             agentecodigo = EXCLUDED.agentecodigo,
+            nomipad = EXCLUDED.nomipad,
+            codpedido = EXCLUDED.codpedido,
             load_ts = CURRENT_TIMESTAMP
     """)
 
