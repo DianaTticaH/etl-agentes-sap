@@ -21,6 +21,7 @@ def extract_orders_from_hana(last_source_key=None) -> pd.DataFrame:
                 X."DocTotal",
                 X."VatSum",
                 X."DiscSum",
+                X."TotalExpns",
                 X."Comments",
                 X."AgenteCodigo",
                 SUBSTR_REGEXPR('[A-Za-z]+' IN X."AgenteCodigo") AS "Nomipad",
@@ -38,6 +39,7 @@ def extract_orders_from_hana(last_source_key=None) -> pd.DataFrame:
                     "DocTotal",
                     "VatSum",
                     "DiscSum",
+                    "TotalExpns",
                     "Comments",
                     SUBSTR_REGEXPR('[A-Za-z]+-[0-9]+' IN "Comments") AS "AgenteCodigo",
                     TO_NVARCHAR("UpdateDate", 'YYYYMMDD') || LPAD(TO_NVARCHAR("UpdateTS"), 6, '0') AS "UpdateKey"
@@ -59,6 +61,7 @@ def extract_orders_from_hana(last_source_key=None) -> pd.DataFrame:
                 X."DocTotal",
                 X."VatSum",
                 X."DiscSum",
+                X."TotalExpns",
                 X."Comments",
                 X."AgenteCodigo",
                 SUBSTR_REGEXPR('[A-Za-z]+' IN X."AgenteCodigo") AS "Nomipad",
@@ -76,6 +79,7 @@ def extract_orders_from_hana(last_source_key=None) -> pd.DataFrame:
                     "DocTotal",
                     "VatSum",
                     "DiscSum",
+                    "TotalExpns",
                     "Comments",
                     SUBSTR_REGEXPR('[A-Za-z]+-[0-9]+' IN "Comments") AS "AgenteCodigo",
                     TO_NVARCHAR("UpdateDate", 'YYYYMMDD') || LPAD(TO_NVARCHAR("UpdateTS"), 6, '0') AS "UpdateKey"
@@ -91,3 +95,4 @@ def extract_orders_from_hana(last_source_key=None) -> pd.DataFrame:
     finally:
         if conn:
             conn.close()
+

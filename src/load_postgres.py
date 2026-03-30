@@ -20,6 +20,7 @@ def upsert_orders(df):
         "DocTotal": "doctotal",
         "VatSum": "vatsum",
         "DiscSum": "discsum",
+        "TotalExpns": "totalexpns",
         "Comments": "comments",
         "AgenteCodigo": "agentecodigo",
         "Nomipad": "nomipad",
@@ -29,12 +30,12 @@ def upsert_orders(df):
     query = text("""
         INSERT INTO stg_sap_orders (
             docentry, docnum, docdate, updatedate, updatets, updatekey,
-            cardcode, cardname, doctotal, vatsum, discsum, comments,
+            cardcode, cardname, doctotal, vatsum, discsum, totalexpns, comments,
             agentecodigo, nomipad, codpedido
         )
         VALUES (
             :docentry, :docnum, :docdate, :updatedate, :updatets, :updatekey,
-            :cardcode, :cardname, :doctotal, :vatsum, :discsum, :comments,
+            :cardcode, :cardname, :doctotal, :vatsum, :discsum, :totalexpns, :comments,
             :agentecodigo, :nomipad, :codpedido
         )
         ON CONFLICT (docentry)
@@ -49,6 +50,7 @@ def upsert_orders(df):
             doctotal = EXCLUDED.doctotal,
             vatsum = EXCLUDED.vatsum,
             discsum = EXCLUDED.discsum,
+            totalexpns = EXCLUDED.totalexpns,
             comments = EXCLUDED.comments,
             agentecodigo = EXCLUDED.agentecodigo,
             nomipad = EXCLUDED.nomipad,
